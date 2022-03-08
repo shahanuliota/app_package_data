@@ -8,11 +8,13 @@ class AppPackageData {
 
   static Future<String?> get platformVersion async {
     final String? version = await _channel.invokeMethod('getPlatformVersion');
+
     return version;
   }
 
   static Future<PlatformData> get getAll async {
     final version = await _channel.invokeMethod('getAll');
+    print("get all : $version");
     Map<String, dynamic> mp = json.decode(version);
     return PlatformData.fromJson(mp);
   }
@@ -28,11 +30,11 @@ class PlatformData {
   });
 
   factory PlatformData.fromJson(Map<String, dynamic> mp) => PlatformData(
-        buildNumber: mp['appName'] ?? '',
+        buildNumber: mp['buildNumber'] ?? '',
         buildSignature: BuildSignature.fromJson(mp['buildSignature'] ?? {}),
-        appName: mp['packageName'] ?? '',
+        appName: mp['appName'] ?? '',
         packageName: mp['packageName'] ?? '',
-        version: mp['packageName'] ?? '',
+        version: mp['version'] ?? '',
       );
 
   /// The app name. `CFBundleDisplayName` on iOS, `application/label` on Android.
@@ -63,8 +65,8 @@ class BuildSignature {
   });
 
   factory BuildSignature.fromJson(Map<String, dynamic> m) => BuildSignature(
-        md5: m['MD5'] ?? '',
-        sha256: m['SHA256'] ?? '',
-        sha1: m['SHA1'] ?? '',
+        md5: m['MD5'] ?? m['md5'] ??'',
+        sha256: m['SHA256'] ??m['sha256'] ??'',
+        sha1: m['SHA1'] ?? m['sha1'] ??'',
       );
 }
